@@ -72,7 +72,7 @@
       background-color: #333;
     }
 
-    footer { background-color: #1a1a1a; color: white; padding: 2rem; text-align: center; }
+    footer { background-color: #1a1a1a; color: white; padding: 2rem; text-align: center; position: relative; }
     .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem; margin-bottom: 1rem; text-align: left; }
     .footer-section h4 { font-size: 0.9rem; margin-bottom: 0.5rem; }
     .footer-section ul { list-style: none; padding: 0; font-size: 0.8rem; }
@@ -80,6 +80,9 @@
     .footer-section a { color: #ccc; text-decoration: none; font-size: 0.8rem; }
     .footer-divider { height: 1px; background: #444; margin: 1rem 0; opacity: 0.4; }
     .footer-bottom { font-size: 0.75rem; text-align: center; margin-top: 1rem; }
+
+    /* Hidden Admin Change Code Button */
+    #adminAccess { display: none; margin-top: 1rem; }
   </style>
 </head>
 <body oncontextmenu="return false">
@@ -111,6 +114,11 @@
     <label><input type="checkbox" id="confirm" required> I confirm that I am present.</label>
     <button type="submit">Submit Attendance</button>
   </form>
+
+  <!-- Hidden Admin button -->
+  <div id="adminAccess">
+    <button onclick="showCodeChangePrompt()" style="padding:0.7rem 1rem; border-radius:8px; border:none; background-color:#f0a; font-weight:bold; cursor:pointer;">Change Code</button>
+  </div>
 </main>
 <iframe name="hidden_iframe" style="display:none;"></iframe>
 
@@ -137,7 +145,6 @@
   };
 
   let todayCode = "";
-
   function disableFields(disabled) {
     document.getElementById('roll').disabled = disabled;
     document.getElementById('confirm').disabled = disabled;
@@ -150,14 +157,13 @@
       document.getElementById('main-content').classList.add('visible');
     }, 1500);
 
-    // Dropdown population & handling
     const rollInput = document.getElementById('roll');
     const nameInput = document.getElementById('name');
     const dropdownSelected = document.getElementById('dropdownSelected');
     const dropdownOptions = document.getElementById('dropdownOptions');
     const dropdown = document.getElementById('customDropdown');
 
-    Object.keys(rollToName).sort((a, b) => a - b).forEach(roll => {
+    Object.keys(rollToName).sort((a, b) => +a - +b).forEach(roll => {
       const div = document.createElement('div');
       div.textContent = roll;
       div.dataset.value = roll;
@@ -179,15 +185,13 @@
     });
 
     document.addEventListener('click', (e) => {
-      if (!dropdown.contains(e.target)) {
-        dropdownOptions.classList.remove('show');
-      }
+      if (!dropdown.contains(e.target)) dropdownOptions.classList.remove('show');
     });
 
     const today = new Date().toISOString().split("T")[0];
     todayCode = codeSchedule[today] || "";
-    disableFields(true);
 
+    disableFields(true);
     document.getElementById('code').addEventListener('input', function () {
       const inputCode = this.value.trim().toUpperCase();
       if (inputCode === todayCode) {
@@ -201,7 +205,6 @@
 
     document.getElementById('attendanceForm').addEventListener('submit', function (e) {
       e.preventDefault();
-
       const now = new Date();
       const ISTTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
       const hour = ISTTime.getHours();
@@ -220,9 +223,7 @@
       const confirmed = confirm("Attendance submitted successfully. Click OK to proceed.");
       if (confirmed) {
         document.getElementById('attendanceForm').submit();
-        setTimeout(() => {
-          window.location.href = "THANKS.html";
-        }, 1000);
+        setTimeout(() => { window.location.href = "THANKS.html"; }, 1000);
       } else {
         setTimeout(() => {
           document.getElementById('attendanceForm').reset();
@@ -232,7 +233,32 @@
         }, 500);
       }
     });
+
+    // Reveal admin button
+    document.addEventListener('keydown', e => {
+      if (e.ctrlKey && e.shiftKey && e.code === 'KeyC') {
+        document.getElementById('adminAccess').style.display = 'block';
+      }
+    });
   };
+
+  function showCodeChangePrompt() {
+    const password = prompt("Enter admin password:");
+    if (password === "dav123") {
+      const newCode = prompt("Enter new 3‑character code:");
+      if (newCode && /^[A-Z0-9]{3}$/i.test(newCode)) {
+        todayCode = newCode.trim().toUpperCase();
+        alert("✅ Security code updated to: " + todayCode);
+        document.getElementById('code').value = ""; // clear input
+        document.getElementById('codeError').classList.add('hidden');
+        disableFields(true);
+      } else {
+        alert("❌ Invalid code. Must be 3 letters or digits.");
+      }
+    } else {
+      alert("❌ Incorrect password.");
+    }
+  }
 </script>
 </body>
 </html>
