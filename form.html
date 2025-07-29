@@ -28,139 +28,225 @@
     button:hover { background-color: #03a9f4; }
     .hidden { display: none; }
     .error { color: red; font-size: 0.9rem; }
+
     .custom-dropdown { position: relative; user-select: none; }
     .dropdown-selected { padding: 0.7rem; background-color: #222; color: white; border-radius: 8px; cursor: pointer; border: none; }
-    .dropdown-options { position: absolute; top: 100%; left: 0; right: 0; max-height: 0; overflow-y: hidden; background-color: #222; border: 1px solid #444; border-radius: 8px; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.5); opacity: 0; transition: max-height 0.3s ease, opacity 0.3s ease; scroll-behavior: smooth; }
+    .dropdown-options {
+      position: absolute; top: 100%; left: 0; right: 0;
+      max-height: 0; overflow-y: hidden; background-color: #222;
+      border: 1px solid #444; border-radius: 8px; z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5); opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      scroll-behavior: smooth;
+    }
     .dropdown-options.show { max-height: 200px; opacity: 1; overflow-y: auto; }
-    .dropdown-options div { padding: 0.7rem; cursor: pointer; transition: background 0.2s ease; }
+    .dropdown-options div {
+      padding: 0.7rem; cursor: pointer; transition: background 0.2s ease;
+    }
     .dropdown-options div:hover { background-color: #333; }
+
     footer { background-color: #1a1a1a; color: white; padding: 2rem; text-align: center; }
-    .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem; margin-bottom: 1rem; text-align: left; }
+    .footer-content {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem; margin-bottom: 1rem; text-align: left;
+    }
     .footer-section h4 { font-size: 0.9rem; margin-bottom: 0.5rem; }
     .footer-section ul { list-style: none; padding: 0; font-size: 0.8rem; }
+    .footer-section li { margin-bottom: 4px; }
+    .footer-section a { color: #ccc; text-decoration: none; font-size: 0.8rem; }
+    .footer-divider { height: 1px; background: #444; margin: 1rem 0; opacity: 0.4; }
     .footer-bottom { font-size: 0.75rem; text-align: center; margin-top: 1rem; }
   </style>
 </head>
 <body oncontextmenu="return false">
-  <div id="preloader"><div class="spinner"></div></div>
-  <header>
-    <div class="logo-container"><img src="logo-512x512-1.png" alt="DAV Logo"></div>
-    <h1>D.A.V. College Jalandhar</h1>
-  </header>
-  <main id="main-content">
-    <form id="attendanceForm" method="POST" action="https://script.google.com/macros/s/AKfycbza‑xO9y3u03CuBnRS5MvUwPYOUGe6cRokY7PTGhzu1_xZvVaqJBzAc‑0Kgt5jsi2Nn/exec" target="hidden_iframe">
-      <h2>Attendance Form</h2>
-      <label for="code">Security Code</label>
-      <input type="text" id="code" maxlength="3" required>
-      <div id="codeError" class="error hidden">Invalid code. Please try again.</div>
-      <label for="roll">Roll Number</label>
-      <div class="custom-dropdown" id="customDropdown">
-        <div class="dropdown-selected" id="dropdownSelected">Select Roll Number</div>
-        <div class="dropdown-options" id="dropdownOptions"></div>
-        <input type="hidden" id="roll" name="roll" required>
-      </div>
-      <label for="name">Name</label>
-      <input type="text" id="name" name="name" readonly required>
-      <label><input type="checkbox" id="confirm" required> I confirm that I am present.</label>
-      <button type="submit">Submit Attendance</button>
-    </form>
-  </main>
-  <iframe name="hidden_iframe" style="display:none;"></iframe>
-  <footer>
-    <div class="footer-content">
-      <div class="footer-section"><h4>Quick Links</h4><ul><li><a href="#">Attendance Policy</a></li></ul></div>
-      <div class="footer-section"><h4>Social Media</h4><ul><li><a href="https://www.youtube.com/@nischaybahl7714" target="_blank">YouTube</a></li></ul></div>
-      <div class="footer-section"><h4>Contact</h4><ul><li><a href="mailto:bca25.28.dav@gmail.com">bca25.28.dav@gmail.com</a></li></ul></div>
-      <div class="footer-section"><h4>Address</h4><ul><li>D.A.V. College, Mahatma Hansraj Marg,<br>Jalandhar, Punjab – 144008, India</li></ul></div>
+<div id="preloader"><div class="spinner"></div></div>
+
+<header>
+  <div class="logo-container"><img src="logo-512x512-1.png" alt="DAV Logo"></div>
+  <h1>D.A.V. College Jalandhar</h1>
+</header>
+
+<main id="main-content">
+  <form id="attendanceForm" method="POST" action="https://script.google.com/macros/s/AKfycbxSVOE1_zV-N_fFAi6U1i-cRD6zObrb_1MlFsbNkJd-ps8xCzq7-OcNZBPJKaymNk-rNg/exec" target="hidden_iframe">
+    <h2>Attendance Form</h2>
+    <label for="code">Security Code</label>
+    <input type="text" id="code" maxlength="3" required>
+    <div id="codeError" class="error hidden">Invalid code. Please try again.</div>
+
+    <label for="roll">Roll Number</label>
+    <div class="custom-dropdown" id="customDropdown">
+      <div class="dropdown-selected" id="dropdownSelected">Select Roll Number</div>
+      <div class="dropdown-options" id="dropdownOptions"></div>
+      <input type="hidden" id="roll" name="roll" required />
     </div>
-    <div class="footer-divider"></div>
-    <div class="footer-bottom">© 2025 | Credits: Prabhsimranjot Singh, BCA (FCA‑1)</div>
-  </footer>
 
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" readonly required>
+
+    <label><input type="checkbox" id="confirm" required> I confirm that I am present.</label>
+    <button type="submit">Submit Attendance</button>
+  </form>
+</main>
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-section"><h4>Quick Links</h4><ul><li><a href="#">Attendance Policy</a></li></ul></div>
+    <div class="footer-section"><h4>Social Media</h4><ul><li><a href="https://www.youtube.com/@nischaybahl7714" target="_blank">YouTube</a></li></ul></div>
+    <div class="footer-section"><h4>Contact</h4><ul><li><a href="mailto:bca25.28.dav@gmail.com">bca25.28.dav@gmail.com</a></li></ul></div>
+    <div class="footer-section"><h4>Address</h4><ul><li>D.A.V. College, Mahatma Hansraj Marg,<br>Jalandhar, Punjab – 144008, India</li></ul></div>
+  </div>
+  <div class="footer-divider"></div>
+  <div class="footer-bottom">© 2025 | Credits: Prabhsimranjot Singh, BCA (FCA-1)</div>
+</footer>
 <script>
-const rollToName = { /* same map as before */ 
-  "1": "CHIRAG RANA", "2": "SHARANJIT SINGH", /*...*/ "27": "PRABHSIMRANJOT SINGH", "62": "NIKHIL"
-};
-const codeSchedule = {
-  "2025‑07‑29": "11A", "2025‑07‑28": "XUZ", /*...*/ "2025‑07‑27": "ABC"
-};
+  const rollToName = {
+    "1": "CHIRAG RANA", "2": "SHARANJIT SINGH", "3": "ANEESH KUMAR", "4": "JATINVEER", "5": "SOHAN KUMAR",
+    "6": "TUSHAR", "7": "VANSH SHARMA", "8": "SAGAR KUMAR MANDAL", "9": "MEHAK", "10": "MANREET KAUR",
+    "11": "ARUSHI", "12": "MANNAT", "13": "SURAJ SINGH", "14": "DIPANKAR", "15": "SNEHA", "16": "NAVJOT KAUR",
+    "17": "ADITYA SHARMA", "18": "ROHAN", "19": "DAMANJEET", "20": "SHIVAM PANDEY", "21": "NITIN", "22": "NIKHIL",
+    "23": "AARUSHI MALHOTRA", "24": "ANKIT KUMAR", "25": "EKAMJEET KAUR KALRA", "26": "SHIVAM", "27": "PRABHSIMRANJOT SINGH",
+    "28": "SUMANT SHARMA", "29": "HARSHIT", "30": "NAMPREET SINGH", "31": "TANUSH", "32": "PARTH AULUCK", "33": "TANISH JAIN",
+    "34": "PALAK BHARDWAJ", "35": "AKASH DEEP", "36": "AYUSH KUMAR", "37": "LAKSH", "38": "JASHAN ARORA", "39": "KRISHAN SINGH",
+    "40": "KULWINDER KAUR", "41": "DAKSH CHAUHAN", "42": "DIWAKAR", "43": "SARUCHI SHARMA", "44": "AMRITPAL SINGH",
+    "45": "GLORY", "46": "SIMRAN", "47": "MANIK", "48": "OM TALWAR", "49": "NITIN KUMARN BASRA", "50": "KHUSHI",
+    "52": "KUNAL BHAGAT", "53": "JATIN GILHOTRA", "54": "LAKSH KALIA", "55": "LAKSHAY JOSHI", "56": "MAANSHU DUBEY",
+    "57": "PREET LOI", "58": "KARAN SINGH", "59": "VIBHOR JAIN", "60": "UTKARSHA RAJ SINGH", "61": "MEHAK", "62": "NIKHIL"
+  };
 
-function disableFields(disabled) {
-  document.getElementById('confirm').disabled = disabled;
-  document.querySelector('button[type="submit"]').disabled = disabled;
-}
+  const codeSchedule = {
+    "2025-07-29": { "1": "11A", "2": "XYZ", "3": "ABC" },
+    "2025-07-30": { "1": "323", "2": "DEF", "3": "456" },
+    "2025-07-31": { "1": "AIK", "2": "LMN", "3": "OPQ" },
+    // Add more days with period-wise codes here
+  };
 
-window.onload = function () {
-  setTimeout(() => {
-    document.getElementById('preloader').classList.add('fade-out');
-    document.getElementById('main-content').classList.add('visible');
-  }, 1500);
+  let todayCode = "";
 
-  const dropdownSelected = document.getElementById('dropdownSelected');
-  const dropdownOptions = document.getElementById('dropdownOptions');
-  const rollInput = document.getElementById('roll');
-  const nameInput = document.getElementById('name');
-  const dropdownDiv = document.getElementById('customDropdown');
-
-  Object.keys(rollToName).sort((a,b)=>a-b).forEach(r=>{
-    const d = document.createElement('div');
-    d.textContent = r;
-    d.dataset.value = r;
-    dropdownOptions.appendChild(d);
-  });
-
-  dropdownSelected.addEventListener('click', ()=> dropdownOptions.classList.toggle('show'));
-  dropdownOptions.addEventListener('click', e => {
-    if (e.target.dataset.value) {
-      rollInput.value = e.target.dataset.value;
-      dropdownSelected.textContent = e.target.dataset.value;
-      nameInput.value = rollToName[e.target.dataset.value] || '';
-      dropdownOptions.classList.remove('show');
-    }
-  });
-  document.addEventListener('click', e => { if (!dropdownDiv.contains(e.target)) dropdownOptions.classList.remove('show'); });
-
-  const today = new Date().toISOString().split("T")[0];
-  const todayCode = codeSchedule[today] || "";
-  disableFields(true);
-
-  document.getElementById('code').addEventListener('input', function(){
-    if (this.value.trim().toUpperCase() === todayCode) {
-      document.getElementById('codeError').classList.add('hidden');
-      disableFields(false);
-    } else {
-      disableFields(true);
-      document.getElementById('codeError').classList.remove('hidden');
-    }
-  });
-
-  document.getElementById('attendanceForm').addEventListener('submit', function(e){
-    e.preventDefault();
+  function getPeriodAndCode() {
     const now = new Date();
-    const IST = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
-    const h = IST.getHours(), m = IST.getMinutes();
-    if (!(h===12 && m>=0 && m<=40)) {
-      alert("Form accessible only between 12:00 PM and 12:40 PM IST");
-      return;
+    const ISTTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+    const totalMinutes = ISTTime.getHours() * 60 + ISTTime.getMinutes();
+    const dateStr = ISTTime.toISOString().split("T")[0];
+
+    const periodTimes = [
+      { period: "1", start: 630, end: 675 },
+      { period: "2", start: 720, end: 765 },
+      { period: "3", start: 810, end: 855 }
+    ];
+
+    for (let slot of periodTimes) {
+      if (totalMinutes >= slot.start && totalMinutes <= slot.end) {
+        return codeSchedule[dateStr]?.[slot.period] || "";
+      }
     }
-    if (document.getElementById('code').value.trim().toUpperCase() !== todayCode) {
-      document.getElementById('codeError').classList.remove('hidden');
-      return;
-    }
-    const ok = confirm("Attendance submitted successfully. Click OK to proceed.");
-    if (ok) {
-      this.submit();
-      setTimeout(()=> window.location.href = "THANKS.html", 1000);
-    } else {
-      setTimeout(()=>{
-        this.reset();
-        nameInput.value = "";
-        dropdownSelected.textContent = "Select Roll Number";
+
+    return "";
+  }
+
+  function disableFields(disabled) {
+    document.getElementById('roll').disabled = disabled;
+    document.getElementById('confirm').disabled = disabled;
+    document.querySelector('button[type="submit"]').disabled = disabled;
+  }
+
+  window.onload = function () {
+    setTimeout(() => {
+      document.getElementById('preloader').classList.add('fade-out');
+      document.getElementById('main-content').classList.add('visible');
+    }, 1500);
+
+    // Populate dropdown
+    const rollInput = document.getElementById('roll');
+    const nameInput = document.getElementById('name');
+    const dropdownSelected = document.getElementById('dropdownSelected');
+    const dropdownOptions = document.getElementById('dropdownOptions');
+    const dropdown = document.getElementById('customDropdown');
+
+    Object.keys(rollToName).sort((a, b) => a - b).forEach(roll => {
+      const div = document.createElement('div');
+      div.textContent = roll;
+      div.dataset.value = roll;
+      dropdownOptions.appendChild(div);
+    });
+
+    dropdownSelected.addEventListener('click', () => {
+      dropdownOptions.classList.toggle('show');
+    });
+
+    dropdownOptions.addEventListener('click', e => {
+      if (e.target.dataset.value) {
+        const roll = e.target.dataset.value;
+        rollInput.value = roll;
+        dropdownSelected.textContent = roll;
+        nameInput.value = rollToName[roll] || '';
+        dropdownOptions.classList.remove('show');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target)) {
+        dropdownOptions.classList.remove('show');
+      }
+    });
+
+    todayCode = getPeriodAndCode();
+    disableFields(true);
+
+    document.getElementById('code').addEventListener('input', function () {
+      const inputCode = this.value.trim().toUpperCase();
+      if (inputCode === todayCode) {
+        document.getElementById('codeError').classList.add('hidden');
+        disableFields(false);
+      } else {
         disableFields(true);
-      },500);
-    }
-  });
-};
+        document.getElementById('codeError').classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('attendanceForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const now = new Date();
+      const ISTTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+      const hour = ISTTime.getHours();
+      const minute = ISTTime.getMinutes();
+      const totalMinutes = hour * 60 + minute;
+
+      const allowedSlots = [
+        { start: 630, end: 675 },
+        { start: 720, end: 765 },
+        { start: 810, end: 855 }
+      ];
+
+      const inTime = allowedSlots.some(slot => totalMinutes >= slot.start && totalMinutes <= slot.end);
+      if (!inTime) {
+        alert("Form is accessible only between:\n10:30–11:15 AM, 12:00–12:45 PM, or 1:30–2:15 PM IST.");
+        return;
+      }
+
+      const codeInput = document.getElementById('code').value.trim().toUpperCase();
+      if (codeInput !== todayCode) {
+        document.getElementById('codeError').classList.remove('hidden');
+        return;
+      }
+
+      const confirmed = confirm("Attendance submitted successfully. Click OK to proceed.");
+      if (confirmed) {
+        document.getElementById('attendanceForm').submit();
+        setTimeout(() => {
+          window.location.href = "THANKS.html";
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          document.getElementById('attendanceForm').reset();
+          nameInput.value = "";
+          dropdownSelected.textContent = "Select Roll Number";
+          disableFields(true);
+        }, 500);
+      }
+    });
+  };
 </script>
 </body>
 </html>
