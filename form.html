@@ -206,8 +206,8 @@
       const ISTTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
       const hour = ISTTime.getHours();
       const minute = ISTTime.getMinutes();
-      if (!(hour === 12 && minute >= 00 || hour === 12 && minute <= 45)) {
-        alert("Form accessible only between 12:00 PM and 12:45 PM IST");
+      if (!(hour === 12 && minute >= 00 || hour === 12 && minute <= 40)) {
+        alert("Form accessible only between 12:00 PM and 12:40 PM IST");
         return;
       }
 
