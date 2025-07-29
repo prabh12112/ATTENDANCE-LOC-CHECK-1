@@ -138,7 +138,8 @@
 
   let todayCode = "";
 
-  function disableFields(disabled) {
+  disableFields(true); // disables roll + checkbox
+ {
     document.getElementById('roll').disabled = disabled;
     document.getElementById('confirm').disabled = disabled;
     document.querySelector('button[type="submit"]').disabled = disabled;
