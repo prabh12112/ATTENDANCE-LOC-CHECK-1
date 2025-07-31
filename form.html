@@ -1058,41 +1058,44 @@
 </script>
   
   <script>
-  // Attendance allowed from 12:00 PM to 12:45 PM only
-  const formStart = "23:00"; // Start time in 24-hour format
-  const formEnd = "00:00";   // End time in 24-hour format
+  const formStart = "23:30"; // 11:30 PM
+  const formEnd = "00:45";   // 12:45 AM
 
-  // Function to check if current time is within allowed range
-  function isTimeWithinRange(start, end) {
+  function isTimeWithinCrossMidnightRange(start, end) {
     const now = new Date();
-    const currentTime = now.getHours() * 60 + now.getMinutes();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
     const [startHour, startMin] = start.split(":").map(Number);
     const [endHour, endMin] = end.split(":").map(Number);
 
-    const startTime = startHour * 60 + startMin;
-    const endTime = endHour * 60 + endMin;
+    const startMinutes = startHour * 60 + startMin;
+    const endMinutes = endHour * 60 + endMin;
 
-    return currentTime >= startTime && currentTime <= endTime;
+    if (startMinutes < endMinutes) {
+      // Normal same-day range
+      return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+    } else {
+      // Cross-midnight range
+      return currentMinutes >= startMinutes || currentMinutes <= endMinutes;
+    }
   }
 
-  // On page load, check time and control form visibility
   window.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("attendanceForm");
     const message = document.createElement("div");
-
     message.style.color = "#ff4d4d";
     message.style.textAlign = "center";
     message.style.margin = "20px";
     message.style.fontSize = "1.1rem";
 
-    if (!isTimeWithinRange(formStart, formEnd)) {
+    if (!isTimeWithinCrossMidnightRange(formStart, formEnd)) {
       form.style.display = "none";
-      message.textContent = "⏰ Attendance is only allowed between 12:00 PM and 12:30 PM.";
+      message.textContent = "⏰ Attendance is only allowed from 11:30 PM to 12:45 AM.";
       form.parentNode.insertBefore(message, form);
     }
   });
 </script>
+
   
   <script>
   const cooldownHours = 12; // 12-hour cooldown
