@@ -1060,7 +1060,7 @@
   <script>
   // Attendance allowed from 12:00 PM to 12:45 PM only
   const formStart = "12:00"; // Start time in 24-hour format
-  const formEnd = "12:45";   // End time in 24-hour format
+  const formEnd = "12:30";   // End time in 24-hour format
 
   // Function to check if current time is within allowed range
   function isTimeWithinRange(start, end) {
@@ -1088,7 +1088,7 @@
 
     if (!isTimeWithinRange(formStart, formEnd)) {
       form.style.display = "none";
-      message.textContent = "⏰ Attendance is only allowed between 12:00 PM and 12:45 PM.";
+      message.textContent = "⏰ Attendance is only allowed between 12:00 PM and 12:30 PM.";
       form.parentNode.insertBefore(message, form);
     }
   });
