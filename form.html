@@ -1081,9 +1081,9 @@
   });
 </script>
   
-  <script>
-  const formStart = "23:30"; // 11:30 PM
-  const formEnd = "00:45";   // 12:45 AM
+ <script>
+  const formStart = "12:00"; // 12:00 PM
+  const formEnd = "12:30";   // 12:30 PM
 
   function isTimeWithinCrossMidnightRange(start, end) {
     const now = new Date();
@@ -1114,7 +1114,7 @@
 
     if (!isTimeWithinCrossMidnightRange(formStart, formEnd)) {
       form.style.display = "none";
-      message.textContent = "⏰ Attendance is only allowed from 11:30 PM to 12:45 AM.";
+      message.textContent = "⏰ Attendance is only allowed from 12:00 PM to 12:30 PM.";
       form.parentNode.insertBefore(message, form);
     }
   });
