@@ -1059,8 +1059,8 @@
   
   <script>
   // Attendance allowed from 12:00 PM to 12:45 PM only
-  const formStart = "12:00"; // Start time in 24-hour format
-  const formEnd = "12:30";   // End time in 24-hour format
+  const formStart = "23:00"; // Start time in 24-hour format
+  const formEnd = "00:00";   // End time in 24-hour format
 
   // Function to check if current time is within allowed range
   function isTimeWithinRange(start, end) {
@@ -1093,6 +1093,46 @@
     }
   });
 </script>
+  
+  <script>
+  const cooldownHours = 12; // 12-hour cooldown
+  const localStorageKey = "lastAttendanceTimestamp";
+  const form = document.getElementById("attendanceForm");
+
+  function hoursSinceLastAttendance() {
+    const last = localStorage.getItem(localStorageKey);
+    if (!last) return Infinity; // First-time visit
+    const lastTime = new Date(parseInt(last));
+    const now = new Date();
+    const diffMs = now - lastTime;
+    return diffMs / (1000 * 60 * 60); // in hours
+  }
+
+  function disableForm(reason) {
+    form.style.display = "none";
+    const message = document.createElement("div");
+    message.style.color = "#ff4d4d";
+    message.style.textAlign = "center";
+    message.style.margin = "20px";
+    message.style.fontSize = "1.1rem";
+    message.textContent = reason;
+    form.parentNode.insertBefore(message, form);
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    // Check if already submitted in the last 12 hours
+    if (hoursSinceLastAttendance() < cooldownHours) {
+      disableForm("⚠️ You’ve already marked attendance from this device.");
+      return;
+    }
+
+    // Attach submission listener
+    form.addEventListener("submit", () => {
+      localStorage.setItem(localStorageKey, Date.now().toString());
+    });
+  });
+</script>
+
 
 </body>
 </html>
