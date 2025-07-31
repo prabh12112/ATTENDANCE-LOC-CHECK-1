@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DAV Attendance Verification</title>
+  <title>Attendance Form</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
     :root {
       --bg-color: #0a0e27;
@@ -18,6 +17,8 @@
       --button-hover: linear-gradient(135deg, #1976d2, #1565c0);
       --success-color: #4caf50;
       --error-color: #f44336;
+      --input-bg: rgba(255, 255, 255, 0.1);
+      --input-border: rgba(255, 255, 255, 0.2);
     }
 
     body.light {
@@ -29,6 +30,8 @@
       --hover-bg: rgba(63, 81, 181, 0.1);
       --button-gradient: linear-gradient(135deg, #3f51b5, #1976d2);
       --button-hover: linear-gradient(135deg, #1976d2, #1565c0);
+      --input-bg: rgba(255, 255, 255, 0.9);
+      --input-border: rgba(63, 81, 181, 0.3);
     }
 
     * {
@@ -49,41 +52,6 @@
 
     body.menu-open {
       overflow: hidden;
-    }
-
-    /* Preloader */
-    #preloader {
-      position: fixed;
-      top: 0; 
-      left: 0;
-      width: 100%; 
-      height: 100%;
-      background: var(--bg-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: all 0.5s ease;
-    }
-
-    #preloader.fade-out {
-      opacity: 0;
-      transform: scale(0);
-      pointer-events: none;
-    }
-
-    .spinner {
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top: 4px solid var(--link-color);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
 
     /* Fixed Header */
@@ -172,6 +140,14 @@
       padding: 0.6rem;
       border-radius: 10px;
       transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 50px;
+      width: 50px;
+      top: -17px;
+      right: 10px;
+
     }
 
     .toggle-mode:hover {
@@ -246,7 +222,7 @@
       }
 
       .menu-toggle {
-        display: flex;
+        display: fleX;
       }
 
       nav {
@@ -299,106 +275,227 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
       transition: all 0.4s ease;
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-
-    main.visible {
-      opacity: 1;
-      transform: translateX(0);
     }
 
     main.menu-open {
       transform: translateY(340px);
     }
 
-    main h2 {
-      font-size: 2.8rem;
+    /* Form Styles */
+    form {
+      background: var(--card-bg);
+      backdrop-filter: blur(25px) saturate(180%);
+      -webkit-backdrop-filter: blur(25px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 3rem;
+      border-radius: 20px;
+      max-width: 600px;
+      width: 100%;
+      margin: 2rem auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    form::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    form h2 {
+      font-size: 2.2rem;
       font-weight: 700;
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
       background: linear-gradient(135deg, #64b5f6, #2196f3);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       letter-spacing: 1px;
-      overflow: hidden;
-      white-space: nowrap;
-      width: 0;
-      animation: typewriter 1s steps(20) forwards 1.6s;
+      text-align: center;
     }
 
-    main p {
-      font-size: 1.3rem;
-      color: var(--link-color);
-      font-weight: 500;
-      margin-bottom: 2rem;
-      max-width: 700px;
-      line-height: 1.7;
-      opacity: 0;
-      animation: fadeInLeft 1s ease forwards 1.8s;
+    label {
+      display: block;
+      margin: 1.5rem 0 0.8rem;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-color);
     }
 
-    #map {
+    input[type="text"], input[type="hidden"] {
       width: 100%;
-      max-width: 600px;
-      height: 300px;
-      margin: 2rem 0;
-      border-radius: 16px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      opacity: 0;
-      animation: fadeInLeft 1s ease forwards 2s;
-    }
-
-    #status {
-      margin: 2rem 0;
-      font-size: 1.3rem;
-      font-weight: 700;
-      padding: 1rem 2rem;
+      padding: 1rem;
       border-radius: 12px;
-      background: var(--card-bg);
+      border: 2px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-color);
+      font-size: 1rem;
+      transition: all 0.3s ease;
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--link-color);
+      box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+      transform: translateY(-2px);
+    }
+
+    input[readonly] {
+      background: rgba(255, 255, 255, 0.05);
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    /* Custom Dropdown Styles */
+    .custom-dropdown {
+      position: relative;
+      user-select: none;
+    }
+
+    .dropdown-selected {
+      width: 100%;
+      padding: 1rem;
+      background: var(--input-bg);
+      color: var(--text-color);
+      border: 2px solid var(--input-border);
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .dropdown-selected::after {
+      content: '▼';
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+    }
+
+    .dropdown-selected:hover {
+      border-color: var(--link-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-selected.active::after {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      max-height: 0;
+      overflow: hidden;
+      background: #1a1a2e;
+      border: 2px solid var(--input-border);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      z-index: 10;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       opacity: 0;
-      animation: fadeInLeft 1s ease forwards 2.2s;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
     }
 
-    #status.success {
-      color: var(--success-color);
-      background: rgba(76, 175, 80, 0.1);
-      border-color: rgba(76, 175, 80, 0.3);
+    body.light .dropdown-options {
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     }
 
-    #status.error {
-      color: var(--error-color);
-      background: rgba(244, 67, 54, 0.1);
-      border-color: rgba(244, 67, 54, 0.3);
+    .dropdown-options.show {
+      max-height: 200px;
+      opacity: 1;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
 
-    a#continue-btn {
+    .dropdown-options.show::-webkit-scrollbar {
       display: none;
-      text-decoration: none;
-      padding: 1.8rem 2rem;
+    }
+
+    .dropdown-options div {
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dropdown-options div:hover {
+      background: var(--hover-bg);
+      transform: translateX(5px);
+    }
+
+    .dropdown-options div:last-child {
+      border-bottom: none;
+    }
+
+    /* Checkbox Styles */
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0;
+      padding: 1rem;
+      background: var(--input-bg);
+      border-radius: 12px;
+      border: 2px solid var(--input-border);
+      transition: all 0.3s ease;
+    }
+
+    .checkbox-container:hover {
+      border-color: var(--link-color);
+      transform: translateY(-2px);
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--link-color);
+      cursor: pointer;
+    }
+
+    .checkbox-container label {
+      margin: 0;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    /* Button Styles */
+    button {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 1.5rem 2rem;
+      border: none;
+      border-radius: 12px;
       background: var(--button-gradient);
       color: #fff;
       font-weight: 700;
       font-size: 1.1rem;
-      border-radius: 16px;
+      cursor: pointer;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
       box-shadow: 0 8px 25px rgba(63, 81, 181, 0.3);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      opacity: 0;
-      animation: fadeInLeft 1s ease forwards 2.4s;
     }
 
-    a#continue-btn::before {
+    button::before {
       content: '';
       position: absolute;
       top: 0;
@@ -409,18 +506,46 @@
       transition: left 0.6s;
     }
 
-    a#continue-btn:hover {
+    button:hover {
       transform: translateY(-4px) scale(1.02);
       box-shadow: 0 15px 40px rgba(63, 81, 181, 0.4);
       background: var(--button-hover);
     }
 
-    a#continue-btn:hover::before {
+    button:hover::before {
       left: 100%;
     }
 
-    a#continue-btn.show {
-      display: inline-flex;
+    button:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    button:disabled:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Error Styles */
+    .error {
+      color: var(--error-color);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      padding: 0.8rem;
+      background: rgba(244, 67, 54, 0.1);
+      border: 1px solid rgba(244, 67, 54, 0.3);
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+    }
+
+    .hidden {
+      display: none;
     }
 
     /* Mobile Optimizations */
@@ -435,32 +560,25 @@
         transform: translateY(360px);
       }
 
-      main h2 {
-        font-size: 2.2rem;
-        margin-bottom: 0.8rem;
+      form {
+        padding: 2rem 1.5rem;
+        margin: 1rem auto;
+        border-radius: 16px;
       }
 
-      main p {
-        font-size: 1.1rem;
+      form h2 {
+        font-size: 1.8rem;
         margin-bottom: 1.5rem;
-        padding: 0 0.5rem;
       }
 
-      #map {
-        height: 250px;
-        margin: 1.5rem 0;
+      input[type="text"], .dropdown-selected {
+        padding: 0.8rem;
+        font-size: 0.95rem;
       }
 
-      #status {
-        font-size: 1.1rem;
-        padding: 0.8rem 1.5rem;
-        margin: 1.5rem 0;
-      }
-
-      a#continue-btn {
-        padding: 1.5rem 1.2rem;
+      button {
+        padding: 1.2rem 1.5rem;
         font-size: 1rem;
-        border-radius: 12px;
       }
     }
 
@@ -473,25 +591,21 @@
         padding: 1.5rem 0.8rem;
       }
 
-      main h2 {
-        font-size: 1.8rem;
+      form {
+        padding: 1.5rem 1rem;
       }
 
-      main p {
-        font-size: 1rem;
+      form h2 {
+        font-size: 1.6rem;
       }
 
-      #map {
-        height: 200px;
+      input[type="text"], .dropdown-selected {
+        padding: 0.7rem;
+        font-size: 0.9rem;
       }
 
-      #status {
-        font-size: 1rem;
-        padding: 0.7rem 1rem;
-      }
-
-      a#continue-btn {
-        padding: 1.3rem 1rem;
+      button {
+        padding: 1rem 1.2rem;
         font-size: 0.95rem;
       }
     }
@@ -576,7 +690,6 @@
       }
 
       .footer-content {
-        display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
         margin-bottom: 1rem;
@@ -605,27 +718,16 @@
         font-size: 0.75rem;
       }
     }
-
-    @keyframes typewriter {
-      to { width: 100%; }
-    }
-
-    @keyframes fadeInLeft {
-      from { opacity: 0; transform: translateX(-20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
   </style>
 </head>
 <body oncontextmenu="return false">
-
-<div id="preloader"><div class="spinner"></div></div>
 
 <header>
   <div class="logo-container">
     <img src="logo-512x512-1.png" alt="DAV Logo" />
     <div class="header-title">
       <h1>D.A.V. College Jalandhar</h1>
-      <span>LOCATION VERIFICATION</span>
+      <span>ATTENDANCE FORM</span>
     </div>
   </div>
 
@@ -648,15 +750,33 @@
 </header>
 
 <main id="mainContent">
-  <h2>Location Verification</h2>
-  <p>We are checking if you're at the correct attendance location. Please ensure location access is enabled for accurate verification.</p>
-  
-  <div id="map"></div>
-  <div id="status">Checking your location...</div>
-  <a id="continue-btn" href="form.html" target="_blank">
-    📝 Continue to Attendance Form
-  </a>
+  <form id="attendanceForm" method="POST" action="https://script.google.com/macros/s/AKfycbxSVOE1_zV-N_fFAi6U1i-cRD6zObrb_1MlFsbNkJd-ps8xCzq7-OcNZBPJKaymNk-rNg/exec" target="hidden_iframe">
+    <h2>Attendance Form</h2>
+
+    <label for="code">Security Code</label>
+    <input type="text" id="code" maxlength="3" required placeholder="Enter security code">
+    <div id="codeError" class="error hidden">Invalid code. Please try again.</div>
+
+    <label for="roll">Roll Number</label>
+    <div class="custom-dropdown" id="customDropdown">
+      <div class="dropdown-selected" id="dropdownSelected">Select Roll Number</div>
+      <div class="dropdown-options" id="dropdownOptions"></div>
+      <input type="hidden" id="roll" name="roll" required />
+    </div>
+
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" readonly required placeholder="Name will appear here">
+
+    <div class="checkbox-container">
+      <input type="checkbox" id="confirm" required>
+      <label for="confirm">I confirm that I am present and the information provided is accurate.</label>
+    </div>
+
+    <button type="submit">Submit Attendance</button>
+  </form>
 </main>
+
+<iframe name="hidden_iframe" style="display:none;"></iframe>
 
 <footer id="footerContent">
   <div class="footer-content">
@@ -692,100 +812,222 @@
   </div>
 </footer>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-  // Location verification constants
-  const requiredLat = 31.3494154;
-  const requiredLng = 75.5573411;
-  const radius = 0.05; // 50 meters
+  // Student data
+  const rollToName = {
+    "1": "CHIRAG RANA", "2": "SHARANJIT SINGH", "3": "ANEESH KUMAR", "4": "JATINVEER", "5": "SOHAN KUMAR", 
+    "6": "TUSHAR", "7": "VANSH SHARMA", "8": "SAGAR KUMAR MANDAL", "9": "MEHAK", "10": "MANREET KAUR", 
+    "11": "ARUSHI", "12": "MANNAT", "13": "SURAJ SINGH", "14": "DIPANKAR", "15": "SNEHA", 
+    "16": "NAVJOT KAUR", "17": "ADITYA SHARMA", "18": "ROHAN", "19": "DAMANJEET", "20": "SHIVAM PANDEY", 
+    "21": "NITIN", "22": "NIKHIL", "23": "AARUSHI MALHOTRA", "24": "ANKIT KUMAR", "25": "EKAMJEET KAUR KALRA", 
+    "26": "SHIVAM", "27": "PRABHSIMRANJOT SINGH", "28": "SUMANT SHARMA", "29": "HARSHIT", "30": "NAMPREET SINGH", 
+    "31": "TANUSH", "32": "PARTH AULUCK", "33": "TANISH JAIN", "34": "PALAK BHARDWAJ", "35": "AKASH DEEP", 
+    "36": "AYUSH KUMAR", "37": "LAKSH", "38": "JASHAN ARORA", "39": "KRISHAN SINGH", "40": "KULWINDER KAUR", 
+    "41": "DAKSH CHAUHAN", "42": "DIWAKAR", "43": "SARUCHI SHARMA", "44": "AMRITPAL SINGH", "45": "GLORY", 
+    "46": "SIMRAN", "47": "MANIK", "48": "OM TALWAR", "49": "NITIN KUMARN BASRA", "50": "KHUSHI", 
+    "52": "KUNAL BHAGAT", "53": "JATIN GILHOTRA", "54": "LAKSH KALIA", "55": "LAKSHAY JOSHI", "56": "MAANSHU DUBEY", 
+    "57": "PREET LOI", "58": "KARAN SINGH", "59": "VIBHOR JAIN", "60": "UTKARSHA RAJ SINGH", "61": "MEHAK", "62": "NIKHIL"
+  };
 
-  // Menu toggle functionality
-  const toggle = document.getElementById('menuToggle');
-  const nav = document.getElementById('navMenu');
-  const mainContent = document.getElementById('mainContent');
-  const footerContent = document.getElementById('footerContent');
-  
-  toggle.addEventListener('click', () => {
-    nav.classList.toggle('active');
-    toggle.classList.toggle('active');
+  // Security codes by date
+  const codeSchedule = {
+    "2025-07-31": "ABC", // Today's code for testing
+    "2025-08-01": "XYZ",
+    "2025-08-02": "123"
+  };
+
+  // Get today's date in YYYY-MM-DD format
+  function getTodayDate() {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  }
+
+  // Initialize page
+  function initializePage() {
+    // Populate dropdown options
+    const dropdownOptions = document.getElementById('dropdownOptions');
+    Object.keys(rollToName).forEach(roll => {
+      const option = document.createElement('div');
+      option.textContent = `Roll ${roll} - ${rollToName[roll]}`;
+      option.dataset.roll = roll;
+      option.addEventListener('click', selectRoll);
+      dropdownOptions.appendChild(option);
+    });
+
+    // Setup dropdown functionality
+    const dropdownSelected = document.getElementById('dropdownSelected');
+    dropdownSelected.addEventListener('click', toggleDropdown);
+
+    // Setup form validation
+    const codeInput = document.getElementById('code');
+    codeInput.addEventListener('input', validateCode);
+
+    // Setup form submission
+    const form = document.getElementById('attendanceForm');
+    form.addEventListener('submit', handleFormSubmit);
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!document.getElementById('customDropdown').contains(e.target)) {
+        closeDropdown();
+      }
+    });
+
+    // Setup mobile menu - FIXED VERSION FROM CODE 2
+    const toggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('navMenu');
+    const mainContent = document.getElementById('mainContent');
+    const footerContent = document.getElementById('footerContent');
     
-    if (nav.classList.contains('active')) {
-      mainContent.classList.add('menu-open');
-      footerContent.classList.add('menu-open');
-      document.body.classList.add('menu-open');
+    toggle.addEventListener('click', () => {
+      nav.classList.toggle('active');
+      toggle.classList.toggle('active');
+      
+      if (nav.classList.contains('active')) {
+        mainContent.classList.add('menu-open');
+        footerContent.classList.add('menu-open');
+        document.body.classList.add('menu-open');
+      } else {
+        mainContent.classList.remove('menu-open');
+        footerContent.classList.remove('menu-open');
+        document.body.classList.remove('menu-open');
+      }
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!toggle.contains(e.target) && !nav.contains(e.target)) {
+        nav.classList.remove('active');
+        toggle.classList.remove('active');
+        mainContent.classList.remove('menu-open');
+        footerContent.classList.remove('menu-open');
+        document.body.classList.remove('menu-open');
+      }
+    });
+
+    // Setup theme toggle
+    const modeBtn = document.getElementById('darkModeBtn');
+    
+    modeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      modeBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+    });
+  }
+
+  // Dropdown functions
+  function toggleDropdown() {
+    const dropdown = document.getElementById('dropdownOptions');
+    const selected = document.getElementById('dropdownSelected');
+    
+    dropdown.classList.toggle('show');
+    selected.classList.toggle('active');
+  }
+
+  function closeDropdown() {
+    const dropdown = document.getElementById('dropdownOptions');
+    const selected = document.getElementById('dropdownSelected');
+    
+    dropdown.classList.remove('show');
+    selected.classList.remove('active');
+  }
+
+  function selectRoll(event) {
+    const roll = event.target.dataset.roll;
+    const rollInput = document.getElementById('roll');
+    const nameInput = document.getElementById('name');
+    const dropdownSelected = document.getElementById('dropdownSelected');
+    
+    rollInput.value = roll;
+    nameInput.value = rollToName[roll];
+    dropdownSelected.textContent = `Roll ${roll} - ${rollToName[roll]}`;
+    
+    closeDropdown();
+  }
+
+  // Code validation
+  function validateCode() {
+    const codeInput = document.getElementById('code');
+    const codeError = document.getElementById('codeError');
+    const todayCode = codeSchedule[getTodayDate()];
+    
+    if (codeInput.value.length === 3) {
+      if (codeInput.value.toUpperCase() === todayCode) {
+        codeError.classList.add('hidden');
+        codeInput.style.borderColor = 'var(--success-color)';
+        return true;
+      } else {
+        codeError.classList.remove('hidden');
+        codeInput.style.borderColor = 'var(--error-color)';
+        return false;
+      }
     } else {
-      mainContent.classList.remove('menu-open');
-      footerContent.classList.remove('menu-open');
-      document.body.classList.remove('menu-open');
+      codeError.classList.add('hidden');
+      codeInput.style.borderColor = 'var(--input-border)';
+      return false;
     }
-  });
+  }
 
-  // Close mobile menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!toggle.contains(e.target) && !nav.contains(e.target)) {
-      nav.classList.remove('active');
-      toggle.classList.remove('active');
-      mainContent.classList.remove('menu-open');
-      footerContent.classList.remove('menu-open');
-      document.body.classList.remove('menu-open');
-    }
-  });
-
-  // Dark mode toggle
-  const modeBtn = document.getElementById('darkModeBtn');
-  
-  modeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('light');
-    modeBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+  // Form submission
+  function handleFormSubmit(event) {
+    event.preventDefault();
     
-    // Store theme preference
-    const theme = document.body.classList.contains('light') ? 'light' : 'dark';
-    if (typeof(Storage) !== "undefined") {
-      localStorage.setItem('theme', theme);
+    const isCodeValid = validateCode();
+    const rollValue = document.getElementById('roll').value;
+    const confirmChecked = document.getElementById('confirm').checked;
+    
+    if (!isCodeValid) {
+      alert('Please enter a valid security code.');
+      return;
     }
-  });
-
-  // Load saved theme
-  if (typeof(Storage) !== "undefined") {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-      document.body.classList.add('light');
-      modeBtn.textContent = '☀️';
+    
+    if (!rollValue) {
+      alert('Please select your roll number.');
+      return;
     }
+    
+    if (!confirmChecked) {
+      alert('Please confirm your attendance.');
+      return;
+    }
+    
+    // Submit the form
+    const form = document.getElementById('attendanceForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    submitButton.disabled = true;
+    submitButton.textContent = 'Submitting...';
+    
+    // Create form data
+    const formData = new FormData(form);
+    formData.append('timestamp', new Date().toISOString());
+    formData.append('date', getTodayDate());
+    
+    // Submit to Google Apps Script
+    fetch(form.action, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Attendance submitted successfully!');
+        form.reset();
+        document.getElementById('dropdownSelected').textContent = 'Select Roll Number';
+        document.getElementById('code').style.borderColor = 'var(--input-border)';
+      } else {
+        throw new Error('Submission failed');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Error submitting attendance. Please try again.');
+    })
+    .finally(() => {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Submit Attendance';
+    });
   }
 
-  // Distance calculation function
-  function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the Earth in km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }
-
-  // Show map function
-  function showMap(lat, lng) {
-    const map = L.map('map', {
-      zoomControl: false,
-      dragging: false,
-      doubleClickZoom: false,
-      scrollWheelZoom: false,
-      boxZoom: false,
-      touchZoom: false
-    }).setView([lat, lng], 18);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    L.marker([lat, lng]).addTo(map);
-  }
-
-  // Scroll to top function
+  // Utility functions
   function scrollToTop() {
     window.scrollTo({
       top: 0,
@@ -793,40 +1035,13 @@
     });
   }
 
-  // Location verification
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const { latitude, longitude } = position.coords;
-      showMap(latitude, longitude);
+  // Initialize when page loads
+  document.addEventListener('DOMContentLoaded', initializePage);
 
-      const distance = getDistance(latitude, longitude, requiredLat, requiredLng);
-      const isWithinRange = distance <= radius;
-      const status = document.getElementById("status");
-      const continueBtn = document.getElementById("continue-btn");
-
-      if (isWithinRange) {
-        status.textContent = "✅ You are at the required location.";
-        status.className = "success";
-        continueBtn.classList.add("show");
-      } else {
-        status.textContent = "❌ You are not at the required location!";
-        status.className = "error";
-      }
-    },
-    (error) => {
-      const status = document.getElementById("status");
-      status.textContent = "❌ Error getting your location. Please enable location access.";
-      status.className = "error";
-    }
-  );
-
-  // Page load animations
-  window.onload = function () {
-    setTimeout(() => {
-      document.getElementById('preloader').classList.add('fade-out');
-      document.getElementById('mainContent').classList.add('visible');
-    }, 1500);
-  };
+  // Prevent context menu
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
 
   // Smooth scrolling for anchor links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
