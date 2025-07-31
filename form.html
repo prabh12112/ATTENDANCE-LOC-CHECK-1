@@ -1007,24 +1007,48 @@
       method: 'POST',
       body: formData
     })
-    .then(response => {
-      if (response.ok) {
-        alert('Attendance submitted successfully!');
-        form.reset();
-        document.getElementById('dropdownSelected').textContent = 'Select Roll Number';
-        document.getElementById('code').style.borderColor = 'var(--input-border)';
-      } else {
-        throw new Error('Submission failed');
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('Error submitting attendance. Please try again.');
-    })
-    .finally(() => {
-      submitButton.disabled = false;
-      submitButton.textContent = 'Submit Attendance';
-    });
+.then(response => {
+  if (response.ok) {
+    const successMsg = document.createElement('div');
+    successMsg.textContent = "✅ Attendance submitted successfully! Reloading...";
+    successMsg.style.color = "#4CAF50";
+    successMsg.style.textAlign = "center";
+    successMsg.style.marginTop = "20px";
+    successMsg.style.fontSize = "1.1rem";
+
+    form.parentNode.insertBefore(successMsg, form.nextSibling);
+    form.reset();
+    form.style.display = "none";
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+  } else {
+    const errorMsg = document.createElement('div');
+    errorMsg.textContent = "❌ Error submitting attendance. Please try again.";
+    errorMsg.style.color = "#f44336";
+    errorMsg.style.textAlign = "center";
+    errorMsg.style.marginTop = "20px";
+    errorMsg.style.fontSize = "1.1rem";
+
+    form.parentNode.insertBefore(errorMsg, form.nextSibling);
+  }
+})
+  .catch(error => {
+  console.error('Error:', error);
+  const errorMsg = document.createElement('div');
+  errorMsg.textContent = "❌ Error submitting attendance. Please try again.";
+  errorMsg.style.color = "#f44336";
+  errorMsg.style.textAlign = "center";
+  errorMsg.style.marginTop = "20px";
+  errorMsg.style.fontSize = "1.1rem";
+
+  form.parentNode.insertBefore(errorMsg, form.nextSibling);
+})
+.finally(() => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Submit Attendance';
+});
   }
 
   // Utility functions
