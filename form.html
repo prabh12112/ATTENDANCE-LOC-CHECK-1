@@ -831,21 +831,21 @@
 
   // Security codes by date
   const codeSchedule = {
-    "2025-08-01": "X2Z",
-    "2025-08-02": "AS4",
-    "2025-08-03": "158",
-    "2025-08-04": "17K,
-    "2025-08-05": "1EC",
-    "2025-08-06": "12K",
-    "2025-08-07": "12L",
-    "2025-08-08": "12W",
-    "2025-08-09": "125",
-    "2025-08-10": "12B",
-    "2025-08-11": "12M",
-    "2025-08-12": "12S",
-    "2025-08-13": "12Y",
-    "2025-08-14": "128",
-    "2025-08-15": "122"
+    "2025-08-01": "X1Z",
+    "2025-08-02": "1U3",
+    "2025-08-03": "MU3",
+    "2025-08-04": "1UO",
+    "2025-08-05": "1YU",
+    "2025-08-06": "4F3",
+    "2025-08-07": "693",
+    "2025-08-08": "LN3",
+    "2025-08-09": "1JK",
+    "2025-08-10": "YB3",
+    "2025-08-11": "JIO",
+    "2025-08-12": "LIO",
+    "2025-08-13": "RR3",
+    "2025-08-14": "NB3",
+    "2025-08-15": "TY8",
   };
 
   // Get today's date in YYYY-MM-DD format
@@ -1093,43 +1093,117 @@
   });
 </script>
   
- <script>
-  const formStart = "12:00"; // 12:00 PM
-  const formEnd = "12:30";   // 12:30 PM
+<script>
+const FORM_START = "12:00"; // 12:00 PM
+const FORM_END = "12:30";   // 12:30 PM
 
-  function isTimeWithinCrossMidnightRange(start, end) {
+function getCurrentTimeString() {
+    const now = new Date();
+    return now.toLocaleTimeString('en-US', { 
+        hour12: true, 
+        hour: 'numeric', 
+        minute: '2-digit',
+        second: '2-digit'
+    });
+}
+
+function updateCurrentTime() {
+    const timeDisplay = document.getElementById("currentTime");
+    if (timeDisplay) {
+        timeDisplay.textContent = `Current Time: ${getCurrentTimeString()}`;
+    }
+}
+
+function isTimeWithinRange(start, end) {
     const now = new Date();
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
+    
     const [startHour, startMin] = start.split(":").map(Number);
     const [endHour, endMin] = end.split(":").map(Number);
-
+    
     const startMinutes = startHour * 60 + startMin;
     const endMinutes = endHour * 60 + endMin;
-
-    if (startMinutes < endMinutes) {
-      // Normal same-day range
-      return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+    
+    if (startMinutes <= endMinutes) {
+        // Same-day range (normal case)
+        return currentMinutes >= startMinutes && currentMinutes < endMinutes;
     } else {
-      // Cross-midnight range
-      return currentMinutes >= startMinutes || currentMinutes <= endMinutes;
+        // Cross-midnight range
+        return currentMinutes >= startMinutes || currentMinutes < endMinutes;
     }
-  }
+}
 
-  window.addEventListener("DOMContentLoaded", () => {
+function checkFormAccess() {
     const form = document.getElementById("attendanceForm");
-    const message = document.createElement("div");
-    message.style.color = "#ff4d4d";
-    message.style.textAlign = "center";
-    message.style.margin = "20px";
-    message.style.fontSize = "1.1rem";
-
-    if (!isTimeWithinCrossMidnightRange(formStart, formEnd)) {
-      form.style.display = "none";
-      message.textContent = "⏰ Attendance is only allowed from 12:00 PM to 12:30 PM.";
-      form.parentNode.insertBefore(message, form);
+    const container = document.querySelector(".container");
+    
+    if (!isTimeWithinRange(FORM_START, FORM_END)) {
+        // Hide form and show error message
+        form.style.display = "none";
+        
+        // Remove existing error message if any
+        const existingError = document.querySelector(".error-message");
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        // Create new error message
+        const errorMessage = document.createElement("div");
+        errorMessage.className = "error-message";
+        errorMessage.innerHTML = `
+            <strong>⏰ Form Not Available</strong><br>
+            Attendance submission is only allowed between ${FORM_START} PM and ${FORM_END} PM.<br>
+            Please return during the specified time window.
+        `;
+        
+        container.appendChild(errorMessage);
+    } else {
+        // Show form and remove any error messages
+        form.style.display = "block";
+        const existingError = document.querySelector(".error-message");
+        if (existingError) {
+            existingError.remove();
+        }
     }
-  });
+}
+
+// Initialize when page loads
+window.addEventListener("DOMContentLoaded", () => {
+    updateCurrentTime();
+    checkFormAccess();
+    
+    // Update time every second
+    setInterval(updateCurrentTime, 1000);
+    
+    // Check form access every minute
+    setInterval(checkFormAccess, 60000);
+    
+    // Handle form submission
+    const form = document.getElementById("attendanceForm");
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        // Double-check time restriction on submit
+        if (!isTimeWithinRange(FORM_START, FORM_END)) {
+            alert("⚠️ Submission not allowed outside the designated time window!");
+            return;
+        }
+        
+        // Collect form data
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        
+        // Add timestamp
+        data.submissionTime = new Date().toISOString();
+        
+        // Here you would normally send to server
+        console.log("Attendance Data:", data);
+        alert("✅ Attendance submitted successfully!");
+        
+        // Reset form
+        form.reset();
+    });
+});
 </script>
   
   <script>
